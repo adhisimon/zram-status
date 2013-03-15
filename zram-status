@@ -34,7 +34,7 @@
 # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-VERSION="0.1.1"
+VERSION="0.1.3"
 
 if [ "$1" == "-h" ]; then
 	echo
@@ -82,7 +82,7 @@ echo "disk size      :" $disksize bytes
 echo "original size  :" $orig_data_size bytes
 echo "compr data size:" $compr_data_size bytes
 echo "mem used total :" $mem_used_total bytes
-echo "capacity       :" $mem_used_total/$disksize \($used_ratio%\)
+echo "capacity       :" $orig_data_size/$disksize \($used_ratio%\)
 echo "compression    :" $compr_data_size/$orig_data_size \($comp_ratio%\)
 echo
 echo NOTE: lower compression value is better.
