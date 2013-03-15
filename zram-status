@@ -1,0 +1,88 @@
+#!/bin/sh
+# zram-status 
+# Simple script to show zram status
+# (c) Adhidarma Hadiwinoto <gua@adhisimon.or.id>
+# zram-status is distributed under the following BSD 3-Clause License:
+#
+# Copyright (c) 2013 Adhidarma. All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are
+# met:
+#
+#   1. Redistributions of source code must retain the above copyright
+#      notice, this list of conditions and the following disclaimer.
+#   
+#   2. Redistributions in binary form must reproduce the above copyright
+#      notice, this list of conditions and the following disclaimer in
+#      the documentation and/or other materials provided with the
+#      distribution.
+#
+#   3. Neither the name of Adhidarma nor the names of its contributors may
+#      be used to endorse or promote products derived from this software
+#      without specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+# A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL INFRAE OR
+# CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+# EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+# PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+# PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+# LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+# NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+# SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+VERSION="0.1.0"
+
+if [ "$1" == "-h" ]; then
+	echo
+	echo ZRAM-STATUS v$VERSION
+	echo "(c) Adhidarma Hadiwinoto <gua@adhisimon.or.id>"
+	echo "This program is a free software."
+	echo "Licensed under GPLv3."
+	echo 
+	echo USAGE:
+	echo "    `basename $0` [DEVICE]"
+	echo 
+	echo EXAMPLE:
+	echo "    `basename $0` zram0"
+	echo
+	exit
+fi
+
+if [ -z "$1" ]; then
+	DEV=zram0
+else
+	DEV=$1
+fi
+
+
+if [ ! -d /sys/block/$DEV ];then
+	echo ERROR: /sys/block/$DEV doesn\'t exist
+	exit 1
+fi
+
+compr_data_size=`cat /sys/block/$DEV/compr_data_size`
+orig_data_size=`cat /sys/block/$DEV/orig_data_size`
+disksize=`cat /sys/block/$DEV/disksize`
+mem_used_total=`cat /sys/block/$DEV/mem_used_total`
+
+used_ratio=`expr 100 \* $mem_used_total`
+used_ratio=`expr $used_ratio / $disksize`
+
+comp_ratio=`expr 100 \* $compr_data_size`
+comp_ratio=`expr $comp_ratio / $orig_data_size`
+
+echo adhisimon zram status
+echo =====================
+echo "device         :" $DEV
+echo "disk size      :" $disksize bytes
+echo "original size  :" $orig_data_size bytes
+echo "compr data size:" $compr_data_size bytes
+echo "mem used total :" $mem_used_total bytes
+echo "capacity       :" $mem_used_total/$disksize \($used_ratio%\)
+echo "compression    :" $compr_data_size/$orig_data_size \($comp_ratio%\)
+echo
+echo NOTE: lower compression value is better.
