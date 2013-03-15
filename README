@@ -1,0 +1,6 @@
+ZRAM-STATUS
+(c) Adhidarma Hadiwinoto <gua@adhisimon.or.id> 2013
+
+zram-status is distributed under The BSD 3-Clause License.
+
+It just a simple shell script to show zram (http://en.wikipedia.org/wiki/ZRam) status.
